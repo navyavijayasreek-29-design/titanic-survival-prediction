@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Titanic Survival Prediction</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #07111f, #12304a, #1f5f78);
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        header h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        header p {
+            color: #d5e5ee;
+            font-size: 17px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .card h2 {
+            margin-bottom: 25px;
+            font-size: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #e8f5fa;
+        }
+
+        input,
+        select {
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            color: #222;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #00a8cc;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0089a8;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .result h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .probability {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .info {
+            line-height: 1.7;
+            color: #dbeaf0;
+        }
+
+        .tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            color: #c8dce4;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>🚢 Titanic Survival Prediction</h1>
+        <p>Machine Learning Dashboard for Passenger Survival Prediction</p>
+    </header>
+
+    <div class="card">
+
+        <h2>Passenger Information</h2>
+
+        <form id="predictionForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Passenger Class</label>
+                    <select id="pclass">
+                        <option value="1">1st Class</option>
+                        <option value="2">2nd Class</option>
+                        <option value="3" selected>3rd Class</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sex</label>
+                    <select id="sex">
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="age" min="0" max="100" value="30">
+                </div>
+
+                <div class="form-group">
+                    <label>Siblings / Spouses Aboard</label>
+                    <input type="number" id="sibsp" min="0" max="10" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Parents / Children Aboard</label>
+                    <input type="number" id="parch" min="0" max="10" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Fare</label>
+                    <input type="number" id="fare" min="0" max="600" value="32">
+                </div>
+
+                <div class="form-group">
+                    <label>Port of Embarkation</label>
+                    <select id="embarked">
+                        <option value="S">Southampton (S)</option>
+                        <option value="C">Cherbourg (C)</option>
+                        <option value="Q">Queenstown (Q)</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit">
+                Predict Survival
+            </button>
+
+        </form>
+
+        <div class="result" id="result">
+            <h3 id="predictionText"></h3>
+            <p>Estimated Survival Probability</p>
+            <div class="probability" id="probability"></div>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>About the Project</h2>
+
+        <p class="info">
+            This project uses Machine Learning techniques to predict whether
+            a Titanic passenger would survive based on passenger information
+            such as class, gender, age, family members, fare, and port of
+            embarkation.
+        </p>
+
+        <div class="tech">
+            <span class="tag">Python</span>
+            <span class="tag">Machine Learning</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Scikit-learn</span>
+            <span class="tag">Streamlit</span>
+            <span class="tag">Titanic Dataset</span>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Project Files</h2>
+
+        <p class="info">
+            The project contains the trained Machine Learning model,
+            Titanic dataset, analysis notebook, model comparison results,
+            and Streamlit application.
+        </p>
+
+    </div>
+
+    <footer>
+        Titanic Survival Prediction • Machine Learning Project
+    </footer>
+
+</div>
+
+<script>
+
+document.getElementById("predictionForm").addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const pclass = Number(document.getElementById("pclass").value);
+    const sex = document.getElementById("sex").value;
+    const age = Number(document.getElementById("age").value);
+    const fare = Number(document.getElementById("fare").value);
+
+    /*
+        This is only a browser demonstration.
+        The actual trained Python model is app.py and cannot
+        be executed directly by GitHub Pages.
+    */
+
+    let probability = 50;
+
+    if (sex === "female") {
+        probability += 25;
+    } else {
+        probability -= 15;
+    }
+
+    if (pclass === 1) {
+        probability += 15;
+    } else if (pclass === 3) {
+        probability -= 15;
+    }
+
+    if (age < 15) {
+        probability += 10;
+    }
+
+    if (fare > 50) {
+        probability += 5;
+    }
+
+    probability = Math.max(5, Math.min(95, probability));
+
+    const result = document.getElementById("result");
+    const predictionText = document.getElementById("predictionText");
+    const probabilityText = document.getElementById("probability");
+
+    result.style.display = "block";
+
+    if (probability >= 50) {
+        predictionText.innerHTML = "✅ Prediction: Survived";
+    } else {
+        predictionText.innerHTML = "⚠️ Prediction: Did Not Survive";
+    }
+
+    probabilityText.innerHTML = probability + "%";
+
+});
+
+</script>
+
+</body>
+</html>
