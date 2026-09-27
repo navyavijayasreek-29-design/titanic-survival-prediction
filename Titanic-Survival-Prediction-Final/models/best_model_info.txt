@@ -1,0 +1,8 @@
+{
+  "best_overall_model_by_f1": "Random Forest",
+  "deployed_model": "Random Forest",
+  "deployed_model_f1": 0.734375,
+  "dataset_rows": 891,
+  "dataset_columns": 12,
+  "tensorflow_available": false
+}
